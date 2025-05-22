@@ -1,7 +1,7 @@
 # Hybrid Meta-learners for Estimating Heterogeneous Treatment Effects
+#### Zhongyuan Liang, Lars van der Laan, Ahmed Alaa
 
-This repository contains the code for the paper **"Hybrid Meta-learners for Estimating Heterogeneous Treatment Effects"**.  
-It includes the implementation of the proposed **Hybrid Learner (H-learner)** and code to reproduce the experiments presented in the paper.
+This repository contains the code for the paper "Hybrid Meta-learners for Estimating Heterogeneous Treatment Effects". It includes the implementation of the proposed **Hybrid Learner (H-learner)** and code to reproduce the experiments presented in the paper.
 
 ---
 
@@ -16,6 +16,7 @@ pip install -r requirements.txt
 ---
 
 ## Datasets
+The IHDP 1000 dataset can be downloaded here: https://www.fredjo.com/
 The ACIC 2016 dataset can be downloaded from the official competition website:
 https://jenniferhill7.wixsite.com/acic-2016/competition
 
@@ -60,5 +61,5 @@ cate_pred_test = h_learner_x.predict(X_test)
 All experiments from the paper can be reproduced using the files provided in the experiments/ directory.
 Semi-synthetic results can be reproduced by running run_synthetic.sh and visualized using experiments/synthetic_visualizations.ipynb.
 Benchmark results for IHDP1000 and ACIC2016 can be reproduced by running run_ihdp.sh and run_acic.sh. The results can then be aggregated using experiments/benchmark_results_summary.ipynb.
----
+
 
