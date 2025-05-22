@@ -101,7 +101,7 @@ def main(setting, ratio, seed):
         "seed": seed,
         "model": "TARNet",
         "pehe_test": pehe_test,
-        "alpha": None,
+        "reg_lambda": None,
     })
 
     p = PropensityModel(input_dim=X_train.shape[1])
@@ -119,11 +119,11 @@ def main(setting, ratio, seed):
         "seed": seed,
         "model": "X_learner",
         "pehe_test": pehe_test,
-        "alpha": None,
+        "reg_lambda": None,
     })
 
-    alpha_lst = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    h_learner_x = HLearner(input_dim=X_train.shape[1], learner_type="X", alpha=alpha_lst)
+    reg_lambda_lst = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    h_learner_x = HLearner(input_dim=X_train.shape[1], learner_type="X", reg_lambda=reg_lambda_lst)
     h_learner_x.fit(X_train, y_train, t_train, stage1_y0_prediction, stage1_y1_prediction, stage1_p_prediction)
     cate_pred_train = h_learner_x.predict(X_train)
     cate_pred_test = h_learner_x.predict(X_test)
@@ -134,11 +134,11 @@ def main(setting, ratio, seed):
         "seed": seed,
         "model": "H_learner (X)",
         "pehe_test": pehe_test,
-        "alpha": None,
+        "reg_lambda": None,
     })
 
-    for alpha in alpha_lst:
-        h_learner_x.load_model_for_alpha(alpha)
+    for reg_lambda in reg_lambda_lst:
+        h_learner_x.load_model_for_reg_lambda(reg_lambda)
         cate_pred_train = h_learner_x.predict(X_train)
         cate_pred_test = h_learner_x.predict(X_test)
         pehe_train, sqrt_pehe_train, pehe_test, sqrt_pehe_test = cate_evaluations(cate_pred_train, cate_pred_test, mu0_train, mu1_train, mu0_test, mu1_test)
@@ -148,7 +148,7 @@ def main(setting, ratio, seed):
             "seed": seed,
             "model": "H_learner (X)",
             "pehe_test": pehe_test,
-            "alpha": alpha,
+            "reg_lambda": reg_lambda,
         })
 
     results_df = pd.DataFrame(results)

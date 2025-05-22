@@ -9,6 +9,7 @@ import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from src.utils import *
+from tqdm import tqdm
 
 def set_seed(seed=0):
     random.seed(seed)
@@ -401,9 +402,9 @@ class PropensityModel(nn.Module):
     
 
 class HLearner(nn.Module):
-    def __init__(self, input_dim, alpha, learner_type="X", lr=[0.0001, 0.0005, 0.001], epochs=1000):
+    def __init__(self, input_dim, reg_lambda, learner_type="X", lr=[0.0001, 0.0005, 0.001], epochs=1000):
         super(HLearner, self).__init__()
-        self.alpha = alpha
+        self.reg_lambda = reg_lambda
         self.lr = lr
         self.epochs = epochs
         self.learner_type = learner_type
@@ -436,6 +437,7 @@ class HLearner(nn.Module):
         return x, self.head_treated(x), self.head_control(x)
 
     def fit(self, X, y, t, stage1_y0_prediction, stage1_y1_prediction, stage1_p_pred):
+        print("Fitting H-learner")
         set_seed(0)
 
         if self.learner_type == "X":
@@ -463,9 +465,9 @@ class HLearner(nn.Module):
         train_loader = DataLoader(train_dataset, batch_size=100, shuffle=True, pin_memory=True)
 
         best_overall_val_loss = float("inf")
-        best_alpha = -1
-        self.best_models_per_alpha = {}
-        for alpha in self.alpha:
+        best_lambda = -1
+        self.best_models_per_lambda = {}
+        for reg_lambda in tqdm(self.reg_lambda, desc="Training models for different lambdas"):
             best_val_loss = float("inf")
             best_model_state = None
             for lr in self.lr:
@@ -489,8 +491,8 @@ class HLearner(nn.Module):
                         y_treated_t1 = batch_y[batch_t == 1]
                         y_control_t0 = batch_y[batch_t == 0]
 
-                        loss = (1-alpha) * (criterion(y_hat_treated_t1, y_treated_t1) + criterion(y_hat_control_t0, y_control_t0))
-                        loss += alpha * criterion(y_hat_treated - y_hat_control, batch_pseudo_outcome)
+                        loss = (1-reg_lambda) * (criterion(y_hat_treated_t1, y_treated_t1) + criterion(y_hat_control_t0, y_control_t0))
+                        loss += reg_lambda * criterion(y_hat_treated - y_hat_control, batch_pseudo_outcome)
 
                         loss.backward()
                         optimizer.step()
@@ -509,17 +511,17 @@ class HLearner(nn.Module):
                         
                     scheduler.step()
 
-            self.best_models_per_alpha[alpha] = copy.deepcopy(best_model_state)
+            self.best_models_per_lambda[reg_lambda] = copy.deepcopy(best_model_state)
             self.load_state_dict(best_model_state)
             cate_pred_val = self.predict(X_val_tensor)
             x_score_loss = np.mean((cate_pred_val - x_score) ** 2)
 
             if x_score_loss < best_overall_val_loss:
                 best_overall_val_loss = x_score_loss
-                best_alpha = alpha
+                best_lambda = reg_lambda
 
-        self.load_state_dict(self.best_models_per_alpha[best_alpha])
-        self.best_alpha = best_alpha
+        self.load_state_dict(self.best_models_per_lambda[best_lambda])
+        self.best_lambda = best_lambda
         return self
 
     def predict(self, x):
@@ -537,9 +539,9 @@ class HLearner(nn.Module):
         x_score = t_val * (y_val - val_y0_prediction) + (1-t_val) * (val_y1_prediction - y_val)
         return x_score
     
-    def load_model_for_alpha(self, alpha):
-        if not hasattr(self, "best_models_per_alpha"):
+    def load_model_for_lambda(self, reg_lambda):
+        if not hasattr(self, "best_models_per_lambda"):
             raise ValueError("No models saved. Make sure to call `fit()` first.")
-        if alpha not in self.best_models_per_alpha:
-            raise ValueError(f"No model saved for alpha = {alpha}")
-        self.load_state_dict(self.best_models_per_alpha[alpha])
+        if reg_lambda not in self.best_models_per_lambda:
+            raise ValueError(f"No model saved for reg_lambda = {reg_lambda}")
+        self.load_state_dict(self.best_models_per_lambda[reg_lambda])

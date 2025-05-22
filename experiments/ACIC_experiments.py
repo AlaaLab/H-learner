@@ -97,7 +97,7 @@ def main(folder, k):
         "sqrt_pehe_test": sqrt_pehe_test,
     })
 
-    h_learner_x = HLearner(input_dim=X_train.shape[1], learner_type="X", alpha=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+    h_learner_x = HLearner(input_dim=X_train.shape[1], learner_type="X", reg_lambda=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
     h_learner_x.fit(X_train, y_train, t_train, stage1_y0_prediction, stage1_y1_prediction, stage1_p_prediction)
     cate_pred_train = h_learner_x.predict(X_train)
     cate_pred_test = h_learner_x.predict(X_test)
@@ -112,7 +112,7 @@ def main(folder, k):
         "sqrt_pehe_test": sqrt_pehe_test,
     })
 
-    h_learner_dr = HLearner(input_dim=X_train.shape[1], learner_type="DR", alpha=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+    h_learner_dr = HLearner(input_dim=X_train.shape[1], learner_type="DR", reg_lambda=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
     h_learner_dr.fit(X_train, y_train, t_train, stage1_y0_prediction, stage1_y1_prediction, stage1_p_prediction)
     cate_pred_train = h_learner_dr.predict(X_train)
     cate_pred_test = h_learner_dr.predict(X_test)
