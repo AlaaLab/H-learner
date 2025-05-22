@@ -513,7 +513,7 @@ class HLearner(nn.Module):
 
             self.best_models_per_lambda[reg_lambda] = copy.deepcopy(best_model_state)
             self.load_state_dict(best_model_state)
-            cate_pred_val = self.predict(X_val_tensor)
+            cate_pred_val = self.predict(X_val)
             x_score_loss = np.mean((cate_pred_val - x_score) ** 2)
 
             if x_score_loss < best_overall_val_loss:
