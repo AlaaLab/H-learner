@@ -58,7 +58,9 @@ cate_pred_test = h_learner_x.predict(X_test)
 ## Reproducibility
 
 All experiments from the paper can be reproduced using the files provided in the experiments/ directory.
+
 Semi-synthetic results can be reproduced by running run_synthetic.sh and visualized using experiments/synthetic_visualizations.ipynb.
+
 Benchmark results for IHDP1000 and ACIC2016 can be reproduced by running run_ihdp.sh and run_acic.sh. The results can then be aggregated using experiments/benchmark_results_summary.ipynb.
 
 
