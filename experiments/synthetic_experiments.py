@@ -4,9 +4,10 @@ import pandas as pd
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from src.dataset import *
-from src.models import *
-from src.utils import *
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+from dataset import *
+from models import *
+from utils import *
 
 def generate_synthetic_data(setting, ratio, seed=0):
     np.random.seed(seed)

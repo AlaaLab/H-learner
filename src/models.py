@@ -8,7 +8,6 @@ import copy
 import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from src.utils import *
 from tqdm import tqdm
 
 def set_seed(seed=0):
