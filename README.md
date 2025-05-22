@@ -16,9 +16,10 @@ pip install -r requirements.txt
 ---
 
 ## Datasets
-The IHDP 1000 dataset can be downloaded here: https://www.fredjo.com/
+The IHDP 1000 dataset can be downloaded here: https://www.fredjo.com/.
+
 The ACIC 2016 dataset can be downloaded from the official competition website:
-https://jenniferhill7.wixsite.com/acic-2016/competition
+https://jenniferhill7.wixsite.com/acic-2016/competition.
 
 ## Example Usage
 
@@ -30,7 +31,6 @@ from src.models import *
 X_train, t_train, y_train, mu0_train, mu1_train, X_test, mu0_test, mu1_test = load_ihdp_1000_data(index=1)
 
 # ----- First Stage of H-learner: Estimate nuisance parameters -----
-
 # Estimate potential outcomes with TARNet
 tarnet = TARNet(input_dim=X_train.shape[1], lr=[0.0001], epochs=1000)
 tarnet.fit(X_train, y_train, t_train)
@@ -42,9 +42,8 @@ p.fit(X_train, t_train)
 stage1_p_pred = p.predict(X_train)
 
 # ----- Second Stage of H-learner: Fit the hybrid model -----
-
 h_learner_x = HLearner(
-    input_dim=X_train.shape[1], learner_type="X", alpha=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], 
+    input_dim=X_train.shape[1], learner_type="X", reg_lambda=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], 
     lr=[0.0001], epochs=1000
 )
 h_learner_x.fit(X_train, y_train, t_train, stage1_y0_pred, stage1_y1_pred, stage1_p_pred)
