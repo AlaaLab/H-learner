@@ -1,12 +1,10 @@
 import argparse
 import pandas as pd
-import sys
-import os
+import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
-from dataset import *
-from models import *
-from utils import *
+from src.dataset import *
+from src.models import *
+from src.utils import *
 
 def main(folder, k):
     results = []
@@ -134,7 +132,7 @@ def main(folder, k):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--folder", type=int, required=True, help="Index folder")
-    parser.add_argument("--k", type=int, required=True, help="Index k to select datasets 2k and 2k+1")
+    parser.add_argument("--folder", type=int, required=True, help="Index folder to ACIC datasets")
+    parser.add_argument("--k", type=int, required=True, help="Index k to ACIC datasets")
     args = parser.parse_args()
     main(args.folder, args.k)

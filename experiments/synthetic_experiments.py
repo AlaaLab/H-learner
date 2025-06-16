@@ -1,13 +1,11 @@
 import numpy as np
 import argparse
 import pandas as pd
-import sys
-import os
+import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
-from dataset import *
-from models import *
-from utils import *
+from src.dataset import *
+from src.models import *
+from src.utils import *
 
 def generate_synthetic_data(setting, ratio, seed=0):
     np.random.seed(seed)
@@ -139,7 +137,7 @@ def main(setting, ratio, seed):
     })
 
     for reg_lambda in reg_lambda_lst:
-        h_learner_x.load_model_for_reg_lambda(reg_lambda)
+        h_learner_x.load_model_for_lambda(reg_lambda)
         cate_pred_train = h_learner_x.predict(X_train)
         cate_pred_test = h_learner_x.predict(X_test)
         pehe_train, sqrt_pehe_train, pehe_test, sqrt_pehe_test = cate_evaluations(cate_pred_train, cate_pred_test, mu0_train, mu1_train, mu0_test, mu1_test)

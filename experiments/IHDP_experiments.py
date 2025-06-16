@@ -1,12 +1,10 @@
 import argparse
 import pandas as pd
-import sys
-import os
+import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
-from dataset import *
-from models import *
-from utils import *
+from src.dataset import *
+from src.models import *
+from src.utils import *
 
 def main(i):
     results = []
